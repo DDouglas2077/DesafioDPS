@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ContactList } from "./components/ContactList";
+import { Contact } from "./components/Contact";
 
 function App() {
   const [contacts, setContacts] = useState([]);
