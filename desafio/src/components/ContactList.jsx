@@ -1,6 +1,7 @@
 import React from "react";
 import { Contact } from "./Contact";
 
+
 export const ContactList = ({ contacts, onDelete, onToggleFavorite }) => {
   return (
     <div>
