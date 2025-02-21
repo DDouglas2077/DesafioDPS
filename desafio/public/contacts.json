@@ -3,21 +3,21 @@
       "id": 1,
       "nombre": "Carlos",
       "apellido": "Lopez",
-      "telefono": "555-1234",
+      "telefono": "7355-1234",
       "favorito": false
     },
     {
         "id": 2,
         "nombre": "Marcela",
         "apellido": "Perez",
-        "telefono": "555-5678",
+        "telefono": "7215-5678",
         "favorito": false
       },
       {
         "id": 3,
         "nombre": "Luis",
         "apellido": "Hernandez",
-        "telefono": "555-8765",
+        "telefono": "7585-8765",
         "favorito": false
       }
 ]
