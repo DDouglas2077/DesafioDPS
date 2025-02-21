@@ -3,23 +3,44 @@ import { ContactList } from "./ContactList";
 
 function App() {
   const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState({ firstName: "", lastName: "", phone: "" });
 
   useEffect(() => {
-    fetch("/contacts.json") // Carga los contactos dinámicamente
-      .then((response) => response.json())
-      .then((data) => setContacts(data))
-      .catch((error) => console.error("Error al cargar contactos:", error));
+    fetch("/contacts.json") // Verifica que el archivo esté en /public
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("No se pudo cargar el archivo JSON");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setContacts(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error al cargar contactos:", error);
+        setLoading(false);
+      });
   }, []);
 
-  const addContact = (firstName, lastName, phone) => {
+  const addContact = (e) => {
+    e.preventDefault();
+    if (!formData.firstName || !formData.lastName || !formData.phone) {
+      alert("Por favor, completa todos los campos.");
+      return;
+    }
+    
     const newContact = {
       id: contacts.length + 1,
-      firstName,
-      lastName,
-      phone,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phone: formData.phone,
       favorite: false,
     };
+
     setContacts([...contacts, newContact]);
+    setFormData({ firstName: "", lastName: "", phone: "" }); // Limpiar formulario
   };
 
   const deleteContact = (id) => {
@@ -37,18 +58,40 @@ function App() {
   return (
     <div>
       <h1>Lista de Contactos</h1>
-      {contacts.length > 0 ? (
+      
+      <form onSubmit={addContact}>
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={formData.firstName}
+          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Apellido"
+          value={formData.lastName}
+          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+        />
+        <input
+          type="tel"
+          placeholder="Número de Teléfono"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        />
+        <button type="submit">Agregar Contacto</button>
+      </form>
+
+      {loading ? (
+        <p>Cargando contactos...</p>
+      ) : contacts.length > 0 ? (
         <ContactList
           contacts={[...contacts].sort((a, b) => b.favorite - a.favorite)}
           onDelete={deleteContact}
           onToggleFavorite={toggleFavorite}
         />
       ) : (
-        <p>Cargando contactos...</p>
+        <p>No hay contactos disponibles</p>
       )}
-      <button onClick={() => addContact("Nuevo", "Contacto", "111-222-3333")}>
-        Agregar Contacto
-      </button>
     </div>
   );
 }
