@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { ContactList } from "./components/ContactList";
-import contactsData from "./contact.json";
+import { ContactList } from "./ContactList";
 
 function App() {
   const [contacts, setContacts] = useState([]);
 
   useEffect(() => {
-    setContacts(contactsData);
+    fetch("/contacts.json") // Carga los contactos dinámicamente
+      .then((response) => response.json())
+      .then((data) => setContacts(data))
+      .catch((error) => console.error("Error al cargar contactos:", error));
   }, []);
 
   const addContact = (firstName, lastName, phone) => {
@@ -35,11 +37,15 @@ function App() {
   return (
     <div>
       <h1>Lista de Contactos</h1>
-      <ContactList
-        contacts={[...contacts].sort((a, b) => b.favorite - a.favorite)}
-        onDelete={deleteContact}
-        onToggleFavorite={toggleFavorite}
-      />
+      {contacts.length > 0 ? (
+        <ContactList
+          contacts={[...contacts].sort((a, b) => b.favorite - a.favorite)}
+          onDelete={deleteContact}
+          onToggleFavorite={toggleFavorite}
+        />
+      ) : (
+        <p>Cargando contactos...</p>
+      )}
       <button onClick={() => addContact("Nuevo", "Contacto", "111-222-3333")}>
         Agregar Contacto
       </button>
