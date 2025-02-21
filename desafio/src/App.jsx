@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ContactList } from "./ContactList";
+import { ContactList } from "./components/ContactList";
 
 function App() {
   const [contacts, setContacts] = useState([]);
@@ -7,7 +7,7 @@ function App() {
   const [formData, setFormData] = useState({ firstName: "", lastName: "", phone: "" });
 
   useEffect(() => {
-    fetch("/contacts.json") // Verifica que el archivo esté en /public
+    fetch("/contact.json") 
       .then((response) => {
         if (!response.ok) {
           throw new Error("No se pudo cargar el archivo JSON");
