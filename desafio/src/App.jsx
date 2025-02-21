@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect } from "react";
+import { ContactList } from "./ContactList";
+import contactsData from "./contacts.json";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    setContacts(contactsData);
+  }, []);
+
+  const addContact = (firstName, lastName, phone) => {
+    const newContact = {
+      id: contacts.length + 1,
+      firstName,
+      lastName,
+      phone,
+      favorite: false,
+    };
+    setContacts([...contacts, newContact]);
+  };
+
+  const deleteContact = (id) => {
+    setContacts(contacts.filter((contact) => contact.id !== id));
+  };
+
+  const toggleFavorite = (id) => {
+    setContacts(
+      contacts.map((contact) =>
+        contact.id === id ? { ...contact, favorite: !contact.favorite } : contact
+      )
+    );
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <h1>Lista de Contactos</h1>
+      <ContactList
+        contacts={[...contacts].sort((a, b) => b.favorite - a.favorite)}
+        onDelete={deleteContact}
+        onToggleFavorite={toggleFavorite}
+      />
+      <button onClick={() => addContact("Nuevo", "Contacto", "111-222-3333")}>
+        Agregar Contacto
+      </button>
+    </div>
+  );
 }
 
-export default App
+export default App;
